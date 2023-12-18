@@ -34,11 +34,16 @@ Averiguar la IP de Canon Selphy CP1200 --> Se puede hacer desde el panel de cont
 Acceder al panel de control de CUPS: http://ip-cups:631/
 * Administration --> Add Printer
 * Other Network Printers: Internet Printing Protocol (ipp)
-* Connection: ipp://[CANON_PRINTER_IP]/ipp/print
+* Connection: ipp://[CANON_PRINTER_IP]/ipp/print   ex: ipp://192.168.1.136/ipp/print
 * Name: Canon
 * Or Provide a PPD File: Canon_Selphy_CP1200/Canon_SELPHY_CP1300.ppd
 * Add Printer
 * Set Printer Options: Por defecto como viene ...
+
+Lo que nos tiene que quedar!
+- Driver:	Canon SELPHY CP1300 HTTP-AirPrint (color)
+- Connection:	ipp://192.168.1.136/ipp/print
+- Defaults:	job-sheets=none, none media=jpn_hagaki_100x148mm sides=one-sided
 
 
 ```bash
@@ -49,6 +54,12 @@ PageSize/Media Size: 54x86mm 54x86mm.Fullbleed 89x119mm 89x119mm.Fullbleed *Post
 MediaType/MediaType: *photographic any
 root@b3d93782b833:/workspaces/telephoto# 
 ```
+
+
+## Access development environment
+
+python3 -m venv telephoto
+source telephoto/bin/activate
 
 
 # Links
