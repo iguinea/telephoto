@@ -88,7 +88,7 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
     im=Image.open(cutom_name)
     im.resize((1200,1800))                  # resize image to 1200*1800
     im.save(cutom_resized_name,"JPEG")  # save image to file
-    os.Remove(cutom_name)
+    os.remove(cutom_name)
     
     #print_id = print_file(cutom_resized_name)
     conn = cups.Connection()
@@ -97,7 +97,7 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await context.bot.deleteMessage (message_id = update.message.message_id, chat_id = update.message.chat_id)
     
     await context.bot.send_message(chat_id=update.effective_chat.id, text=f"{print_id}")
-    os.Remove(cutom_resized_name)
+    os.remove(cutom_resized_name)
 
     
 #async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
