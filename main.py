@@ -103,6 +103,13 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
 #async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 #    await context.bot.send_message(chat_id=update.effective_chat.id, text="I'm a bot, please talk to me!")
 async def handle_configure(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    # TODO: Mejorar como se añaden las impresoras usando comandos de la libreria pycups
+    # >>> import cups
+    # >>> help(cups)
+    # # shows auto-generated documentation for cups module
+    
+    # http://nagyak.eastron.hu/doc/system-config-printer-libs-1.2.4/pycups-1.9.51/html/
+    
     # Comprueba si se ha proporcionado algún argumento
     if context.args:
         ip_str = context.args[0]
