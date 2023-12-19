@@ -10,12 +10,25 @@ from time import sleep
 from PIL import Image
 from telegram import Update
 from telegram.ext import filters, MessageHandler, ApplicationBuilder, ContextTypes, CommandHandler
+from wand.image import Image
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     level=logging.INFO
 )
 
+def resize_image(input_path, output_path, new_width):
+    with Image(filename=input_path) as img:
+        # Mantener el aspect ratio
+        aspect_ratio = img.width / img.height
+        new_height = int(new_width / aspect_ratio)
+
+        # Redimensionar la imagen
+        img.resize(new_width, new_height)
+
+        # Guardar la imagen redimensionada
+        img.save(filename=output_path)
+        
 def print_job_details(job_id):
     conn = cups.Connection()
     job_attributes = conn.getJobAttributes(job_id)
@@ -44,27 +57,12 @@ def print_file(filename):
     conn = cups.Connection()
     printers = conn.getPrinters()
 
-    #for printer in printers:
-    #
-    #    print(printer)
-    #    print(printers[printer])
-
     printer_name = list(printers.keys())[0]  # Usa el primer impresor disponible
     print(printer_name)
     
-    #im=Image.open(filename)
-    #im.resize((1200,1800))                  # resize image to 1200*1800
-    #im.save(filename+"resized.jpg","JPEG")  # save image to file
-    
-    #print_id = conn.printFile(printer_name, filename+"resized.jpg", "Python Print Job", {})
     print_id = conn.printFile(printer_name, filename, "Python Print Job", {})
     return print_id
-    #while conn.getJobs().get(print_id, None):
-    #    sleep(1)
     
-    # delete files
-    #os.remove(filename)
-    #os.remove(filename+"resized.jpg")
 
 def download_file(url, filename):
     response = requests.get(url, stream=True)
@@ -79,25 +77,27 @@ def download_file(url, filename):
 
 async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
     photo_file = await context.bot.get_file(update.message.photo[-1].file_id)
-    cutom_name = '/opt/telePhoto/temp/'+str(update.message.from_user.id)+"_"+str(update.message.message_id)+'.jpg'
-    cutom_resized_name = '/opt/telePhoto/temp/'+str(update.message.from_user.id)+"_"+str(update.message.message_id)+'_resized.jpg'
+    custom_name = '/opt/telePhoto/temp/'+str(update.message.from_user.id)+"_"+str(update.message.message_id)+'.jpg'
+    custom_resized_name = '/opt/telePhoto/temp/'+str(update.message.from_user.id)+"_"+str(update.message.message_id)+'_resized.jpg'
     # Descargar la imagen
-    download_file(photo_file.file_path,cutom_name) 
+    download_file(photo_file.file_path,custom_name) 
 
     # resize the image
-    im=Image.open(cutom_name)
-    im.resize((1200,1800))                  # resize image to 1200*1800
-    im.save(cutom_resized_name,"JPEG")  # save image to file
-    os.remove(cutom_name)
+    
+    resize_image(custom_name,custom_resized_name,1200)
+    #im=Image.open(custom_name)
+    #im.resize((1200,1800))                  # resize image to 1200*1800
+    #im.save(custom_resized_name,"JPEG")  # save image to file
+    os.remove(custom_name)
     
     #print_id = print_file(cutom_resized_name)
     conn = cups.Connection()
-    print_id = conn.printFile(config['PRINTER_NAME'], cutom_resized_name, "Python Print Job", {})
+    print_id = conn.printFile(config['PRINTER_NAME'], custom_resized_name, "Python Print Job", {})
     
     await context.bot.deleteMessage (message_id = update.message.message_id, chat_id = update.message.chat_id)
     
     await context.bot.send_message(chat_id=update.effective_chat.id, text=f"{print_id}")
-    os.remove(cutom_resized_name)
+    os.remove(custom_resized_name)
 
     
 #async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):

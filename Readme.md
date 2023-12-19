@@ -62,6 +62,16 @@ python3 -m venv telephoto
 source telephoto/bin/activate
 
 
+
+## GUTENPRINT 5.3
+
+Hay problemas con las impresoras selphy y el gutenprint 5.4, por lo qu tendremos que descargarnos la versión 5.3 y compilarla.
+
+Antes hay que instalar las cabeceras de libusb-1.0-dev
+
+
+
+
 # Links
 
 https://github.com/abelits/canon-selphy-print
